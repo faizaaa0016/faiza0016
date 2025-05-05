@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penjualan Minuman Kopi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2f40a0;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            margin: 20px auto;
+            display: block;
+        }
+        .menu-container {
+            margin-top: 20px;
+        }
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .menu-item {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            color: #333;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .menu-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .menu-item-info {
+            margin: 5px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+        .cart-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ffe600;
+            color: rgb(0, 0, 0);
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            z-index: 101;
+        }
+        .cart {
+            display: none;
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            width: 300px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .cart h2 {
+            color: #2f40a0;
+            margin-top: 0;
+            border-bottom: 2px solid #fbff07;
+            padding-bottom: 10px;
+        }
+        .cart h3 {
+            color: #2f40a0;
+            margin: 15px 0 8px 0;
+        }
+        .cart ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin: 5px 0;
+            color: #333;
+        }
+        .order-button, .quantity-button {
+            background-color: #fbff07;
+            color: rgb(0, 0, 0);
+            border: none;
+            padding: 6px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 3px;
+            width: 80%;
+        }
+        .order-button:hover, .quantity-button:hover {
+            background-color: #f1e9e9;
+        }
+        .customization-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        .customization-buttons .quantity-button {
+            width: 30%;
+            font-size: 12px;
+            padding: 8px 5px;
+        }
+        #whatsapp-button {
+            width: 100%;
+            background-color: #fbff07;
+            color: black;
+            padding: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        #cup-size {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin: 5px 0 15px 0;
+        }
+        .contact {
+            margin-top: 30px;
+            font-size: 16px;
+            color: #2f40a0;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .category-title {
+            font-weight: bold;
+            margin-top: 15px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 5px;
+            color: #2f40a0;
+            text-align: left;
+        }
+        .customization-item {
+            background: #f0f8ff;
+            border: 1px dashed #ccc;
+        }
+        .drink-select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+        }
+        
+        /* Media query untuk perangkat mobile */
+        @media (max-width: 800px) {
+            .menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .cart {
+                width: 280px;
+                right: 10px;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .menu {
+                grid-template-columns: 1fr;
+            }
+            .cart {
+                width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="Logo Coffee Beans.png" alt="Logo Coffee Beans" class="logo">
+        <h1>Coffee Beans</h1>
+        <p>Bukan sekadar kopi, ini adalah cerita dalam setiap cangkirnya 🥨☕</p>
+        
+        <div class="menu-container">
+            <div class="menu">
+                <div class="menu-item">
+                    <img src="Americano.jpeg" alt="Americano">
+                    <div class="menu-item-info">
+                        <span>Americano</span>
+                        <span>Rp 15.000</span>
+                    </div>
+                    <button class="order-button" onclick="addToCart('Americano', 15000)">Pesan</button>
+                </div>
+                <div class="menu-item">
+                    <img src="Cappucino.jpeg" alt="Cappucino">
+                    <div class="menu-item-info">
+                        <span>Cappucino</span>
+                        <span>Rp 10.000</span>
+                    </div>
+                    <button class="order-button" onclick="addToCart('Cappucino', 10000)">Pesan</button>
+                </div>
+                <div class="menu-item">
+                    <img src="Caramel Machiato.jpeg" alt="Caramel Machiato">
+                    <div class="menu-item-info">
+                        <span>Caramel Machiato</span>
+                        <span>Rp 10.000</span>
+                    </div>
+                    <button class="order-button" onclick="addToCart('Caramel Machiato', 10000)">Pesan</button>
+                </div>
+                <div class="menu-item">
+                    <img src="Coffee Latte.jpeg" alt="Coffee Latte">
+                    <div class="menu-item-info">
+                        <span>Coffee Latte</span>
+                        <span>Rp 11.000</span>
+                    </div>
+                    <button class="order-button" onclick="addToCart('Coffee Latte', 11000)">Pesan</button>
+                </div>
+                <div class="menu-item">
+                    <img src="Espresso.jpeg" alt="Espresso">
+                    <div class="menu-item-info">
+                        <span>Espresso</span>
+                        <span>Rp 15.000</span>
+                    </div>
+                    <button class="order-button" onclick="addToCart('Espresso', 15000)">Pesan</button>
+                </div>
+                <div class="menu-item">
+                    <img src="Mochaccino.jpeg" alt="Mochaccino">
+                    <div class="menu-item-info">
+                        <span>Mochaccino</span>
+                        <span>Rp 10.000</span>
+                    </div>
+                    <button class="order-button" onclick="addToCart('Mochaccino', 10000)">Pesan</button>
+                </div>
+                <div class="menu-item">
+                    <img src="Vanilla Latte.jpeg" alt="Vanila Latte">
+                    <div class="menu-item-info">
+                        <span>Vanilla Latte</span>
+                        <span>Rp 9.000</span>
+                    </div>
+                    <button class="order-button" onclick="addToCart('Vanilla Latte', 9000)">Pesan</button>
+                </div>
+                <div class="menu-item">
+                    <img src="Green Tea.jpeg" alt="Green Tea">
+                    <div class="menu-item-info">
+                        <span>Green Tea</span>
+                        <span>Rp 9.000</span>
+                    </div>
+                    <button class="order-button" onclick="addToCart('Green Tea', 9000)">Pesan</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cart-icon" onclick="toggleCart()">🛒 <span id="cart-count">0</span></div>
+        
+        <div class="cart" id="cart">
+            <h2>Keranjang Pesanan</h2>
+            
+            <!-- Minuman -->
+            <div class="category-title">Minuman</div>
+            <ul id="cart-list"></ul>
+            
+            <!-- Tambahan -->
+            <div class="category-title">Tambahan</div>
+            
+            <h3>Ukuran Cangkir:</h3>
+            <select id="cup-size" onchange="updateCupSizes()">
+                <option value="Regular">Regular</option>
+                <option value="Large (+Rp 3.000)">Large (+Rp 3.000)</option>
+            </select>
+            
+            <h3>Tambahan:</h3>
+            <div class="customization-buttons">
+                <button class="quantity-button" id="extra-ice-btn" onclick="toggleCustomization('Extra Ice')">Extra Ice</button>
+                <button class="quantity-button" id="normal-btn" onclick="toggleCustomization('Normal')">Normal</button>
+                <button class="quantity-button" id="less-sugar-btn" onclick="toggleCustomization('Less Sugar')">Less Sugar</button>
+            </div>
+            
+            <ul id="customization-list"></ul>
+            
+            <div class="cart-total">
+                <span>Total Minuman:</span>
+                <span id="total-items">0</span>
+            </div>
+            
+            <div class="cart-total">
+                <span>Total Harga:</span>
+                <span id="total-price">Rp 0</span>
+            </div>
+            
+            <button class="order-button" id="whatsapp-button" onclick="sendOrderToWhatsApp()">Pesan via WhatsApp</button>
+        </div>
+        
+        <div class="contact">
+            <p>Hubungi Kami:</p>
+            <p>Email: <a href="mailto:dailycoffeebeans.id@gmail.com">dailycoffeebeans.id@gmail.com</a></p>
+            <p>WhatsApp: <a href="https://wa.me/6282246553077" target="_blank">+62 822-4655-3077</a></p>
+        </div>
+    </div>
+
+    <script>
+        let cart = {}; // { itemId: { name: string, price: number, basePrice: number, quantity: number, size: string } }
+        let customizations = {}; // { customId: { name: string, quantity: number } }
+        let cartVisible = false;
+        let nextItemId = 1;
+        let nextCustomId = 1;
+
+        function findExistingItem(itemName, cupSize) {
+            // Cari item dengan nama dan ukuran yang sama
+            for (let id in cart) {
+                if (cart[id].name === itemName && cart[id].size === cupSize) {
+                    return id;
+                }
+            }
+            return null;
+        }
+
+        function addToCart(item, basePrice) {
+            console.log("Menambahkan ke keranjang:", item, basePrice);
+            let cupSize = document.getElementById("cup-size").value;
+            let finalPrice = basePrice;
+            
+            // Tambah harga untuk Large
+            if (cupSize.includes("Large")) {
+                finalPrice += 3000;
+            }
+            
+            // Cek apakah item dengan nama dan ukuran yang sama sudah ada di keranjang
+            const existingItemId = findExistingItem(item, cupSize);
+            
+            if (existingItemId) {
+                // Jika sudah ada, tambah quantity
+                cart[existingItemId].quantity++;
+                console.log("Item yang sudah ada ditambah:", cart[existingItemId]);
+            } else {
+                // Jika belum ada, buat item baru
+                const itemId = `item-${nextItemId++}`;
+                cart[itemId] = {
+                    name: item,
+                    price: finalPrice,
+                    basePrice: basePrice,
+                    quantity: 1,
+                    size: cupSize
+                };
+                console.log("Item baru ditambahkan:", cart[itemId]);
+            }
+            
+            // Buka keranjang otomatis saat menambah item
+            if (!cartVisible) {
+                toggleCart();
+            }
+            
+            updateCart();
+        }
+
+        function findExistingCustomization(customName) {
+            // Cari customization dengan nama yang sama
+            for (let id in customizations) {
+                if (customizations[id].name === customName) {
+                    return id;
+                }
+            }
+            return null;
+        }
+        
+        // Fungsi untuk mengaktifkan/menonaktifkan tombol customization
+        function updateCustomizationButtons() {
+            const extraIceBtn = document.getElementById('extra-ice-btn');
+            const normalBtn = document.getElementById('normal-btn');
+            const lessSugarBtn = document.getElementById('less-sugar-btn');
+            
+            // Cek apakah opsi Normal aktif
+            const normalActive = findExistingCustomization('Normal') !== null;
+            
+            // Update visual tombol
+            if (normalActive) {
+                normalBtn.classList.add('active');
+                normalBtn.style.backgroundColor = '#aaf255';
+                
+                // Nonaktifkan tombol lain
+                extraIceBtn.disabled = true;
+                extraIceBtn.style.opacity = '0.5';
+                lessSugarBtn.disabled = true;
+                lessSugarBtn.style.opacity = '0.5';
+            } else {
+                normalBtn.classList.remove('active');
+                normalBtn.style.backgroundColor = '#fbff07';
+                
+                // Aktifkan tombol lain
+                extraIceBtn.disabled = false;
+                extraIceBtn.style.opacity = '1';
+                lessSugarBtn.disabled = false;
+                lessSugarBtn.style.opacity = '1';
+            }
+            
+            // Update visual untuk Extra Ice dan Less Sugar
+            if (findExistingCustomization('Extra Ice') !== null) {
+                extraIceBtn.classList.add('active');
+                extraIceBtn.style.backgroundColor = '#aaf255';
+            } else {
+                extraIceBtn.classList.remove('active');
+                extraIceBtn.style.backgroundColor = '#fbff07';
+            }
+            
+            if (findExistingCustomization('Less Sugar') !== null) {
+                lessSugarBtn.classList.add('active');
+                lessSugarBtn.style.backgroundColor = '#aaf255';
+            } else {
+                lessSugarBtn.classList.remove('active');
+                lessSugarBtn.style.backgroundColor = '#fbff07';
+            }
+        }
+
+        function toggleCustomization(customization) {
+            // Jika memilih Normal
+            if (customization === 'Normal') {
+                // Hapus Extra Ice dan Less Sugar jika ada
+                const extraIceId = findExistingCustomization('Extra Ice');
+                const lessSugarId = findExistingCustomization('Less Sugar');
+                
+                if (extraIceId) delete customizations[extraIceId];
+                if (lessSugarId) delete customizations[lessSugarId];
+                
+                // Toggle Normal
+                const normalId = findExistingCustomization('Normal');
+                if (normalId) {
+                    delete customizations[normalId];
+                } else {
+                    const customId = `custom-${nextCustomId++}`;
+                    customizations[customId] = {
+                        name: 'Normal',
+                        quantity: 1
+                    };
+                }
+            } else {
+                // Jika memilih Extra Ice atau Less Sugar
+                // Hapus Normal jika ada
+                const normalId = findExistingCustomization('Normal');
+                if (normalId) delete customizations[normalId];
+                
+                // Toggle Extra Ice atau Less Sugar
+                const existingCustomId = findExistingCustomization(customization);
+                if (existingCustomId) {
+                    delete customizations[existingCustomId];
+                } else {
+                    const customId = `custom-${nextCustomId++}`;
+                    customizations[customId] = {
+                        name: customization,
+                        quantity: 1
+                    };
+                }
+            }
+            
+            updateCustomizationButtons();
+            updateCart();
+        }
+
+        function removeFromCart(itemId) {
+            if (cart[itemId]) {
+                if (cart[itemId].quantity > 1) {
+                    cart[itemId].quantity--;
+                } else {
+                    delete cart[itemId];
+                }
+                updateCart();
+            }
+        }
+        
+        function removeCustomization(customId) {
+            if (customizations[customId]) {
+                if (customizations[customId].quantity > 1) {
+                    customizations[customId].quantity--;
+                } else {
+                    delete customizations[customId];
+                }
+                updateCart();
+            }
+        }
+        
+        function increaseCustomization(customId) {
+            if (customizations[customId]) {
+                customizations[customId].quantity++;
+                updateCart();
+            }
+        }
+        
+        function increaseQuantity(itemId) {
+            if (cart[itemId]) {
+                cart[itemId].quantity++;
+                updateCart();
+            }
+        }
+        
+        function updateCupSizes() {
+            const selectedSize = document.getElementById("cup-size").value;
+            const isLarge = selectedSize.includes("Large");
+            
+            // Update semua item dalam keranjang dengan ukuran baru
+            for (let itemId in cart) {
+                cart[itemId].size = selectedSize;
+                
+                // Hitung ulang harga berdasarkan ukuran baru
+                cart[itemId].price = cart[itemId].basePrice;
+                if (isLarge) {
+                    cart[itemId].price += 3000;
+                }
+            }
+            
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartList = document.getElementById("cart-list");
+            const customizationList = document.getElementById("customization-list");
+            const totalItems = document.getElementById("total-items");
+            const totalPrice = document.getElementById("total-price");
+            const cartCount = document.getElementById("cart-count");
+            
+            // Bersihkan seluruh daftar
+            cartList.innerHTML = "";
+            customizationList.innerHTML = "";
+            
+            let totalCount = 0;
+            let totalPriceValue = 0;
+            
+            // Tampilkan minuman
+            for (let itemId in cart) {
+                const item = cart[itemId];
+                
+                // Tambahkan ke daftar keranjang
+                let listItem = document.createElement("li");
+                listItem.classList.add("cart-item");
+                listItem.innerHTML = `
+                    <span>${item.name} (${item.size}) - ${item.quantity}x - Rp ${(item.price * item.quantity).toLocaleString()}</span>
+                    <div>
+                        <button class="quantity-button" onclick="removeFromCart('${itemId}')">-</button>
+                        <button class="quantity-button" onclick="increaseQuantity('${itemId}')">+</button>
+                    </div>
+                `;
+                cartList.appendChild(listItem);
+                
+                totalCount += item.quantity;
+                totalPriceValue += item.price * item.quantity;
+            }
+
+            // Tampilkan tambahan
+            for (let customId in customizations) {
+                const custom = customizations[customId];
+                let customItem = document.createElement("li");
+                customItem.classList.add("cart-item", "customization-item");
+                customItem.innerHTML = `
+                    <span>${custom.name}</span>
+                    <div>
+                        <button class="quantity-button" onclick="toggleCustomization('${custom.name}')">Hapus</button>
+                    </div>
+                `;
+                customizationList.appendChild(customItem);
+            }
+            
+            totalItems.textContent = totalCount;
+            totalPrice.textContent = `Rp ${totalPriceValue.toLocaleString()}`;
+            cartCount.textContent = totalCount;
+
+            // Enable or disable the WhatsApp button based on cart status
+            document.getElementById("whatsapp-button").disabled = totalCount === 0;
+            
+            // Update status tombol tambahan
+            updateCustomizationButtons();
+        }
+
+        function toggleCart() {
+            cartVisible = !cartVisible;
+            document.getElementById("cart").style.display = cartVisible ? "block" : "none";
+        }
+
+        function sendOrderToWhatsApp() {
+            if (Object.keys(cart).length === 0) {
+                alert("Silakan pilih minuman terlebih dahulu sebelum memesan.");
+                return; // Tidak melanjutkan jika keranjang kosong
+            }
+
+            let phoneNumber = "6282246553077";
+            let totalAmount = 0;
+            let message = "Halo, saya ingin memesan:\n\n";
+            
+            // Format minuman
+            message += "*MINUMAN:*\n";
+            for (let itemId in cart) {
+                const item = cart[itemId];
+                const itemTotal = item.price * item.quantity;
+                message += `- ${item.name} (${item.size}): ${item.quantity}x - Rp ${itemTotal.toLocaleString()}\n`;
+                totalAmount += itemTotal;
+            }
+            
+            // Format tambahan
+            if (Object.keys(customizations).length > 0) {
+                message += "\n*TAMBAHAN:*\n";
+                // Kumpulkan semua tambahan
+                const customizationNames = [];
+                for (let customId in customizations) {
+                    customizationNames.push(customizations[customId].name);
+                }
+                message += `- ${customizationNames.join(', ')}\n`;
+            }
+            
+            // Tambahkan total
+            message += `\n*TOTAL: Rp ${totalAmount.toLocaleString()}*\n`;
+            
+            let whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, "_blank");
+        }
+
+        // Initialize the cart display and customization buttons
+        updateCart();
+        updateCustomizationButtons();
+    </script>
+</body>
+</html>
